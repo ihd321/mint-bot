@@ -1,0 +1,18 @@
+{
+  "name": "mainnet-nft-mint-watcher",
+  "version": "1.0.0",
+  "description": "Ethers.js v6 Ethereum mainnet NFT mint watcher for a configured contract.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "browser": "node browser/server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "ethers": "^6.13.5"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
