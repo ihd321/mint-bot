@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Browser Wallet NFT Mint Monitor</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+      }
+
+      main {
+        width: min(980px, calc(100vw - 32px));
+        padding: 32px;
+      }
+
+      .card {
+        background: rgba(15, 23, 42, 0.92);
+        border: 1px solid rgba(148, 163, 184, 0.24);
+        border-radius: 24px;
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+        padding: 28px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(28px, 4vw, 44px);
+      }
+
+      p {
+        color: #cbd5e1;
+        line-height: 1.65;
+      }
+
+      .warning {
+        border: 1px solid rgba(251, 191, 36, 0.35);
+        background: rgba(251, 191, 36, 0.1);
+        color: #fde68a;
+        border-radius: 14px;
+        padding: 14px 16px;
+      }
+
+      .grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        margin: 24px 0;
+      }
+
+      label {
+        display: grid;
+        gap: 8px;
+        font-weight: 700;
+      }
+
+      input {
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        border-radius: 12px;
+        padding: 12px 14px;
+        background: #020617;
+        color: #e2e8f0;
+        font: inherit;
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 12px 18px;
+        background: #38bdf8;
+        color: #082f49;
+        cursor: pointer;
+        font-weight: 800;
+        font: inherit;
+      }
+
+      button.secondary {
+        background: #334155;
+        color: #e2e8f0;
+      }
+
+      button.danger {
+        background: #f97316;
+        color: #431407;
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+
+      dl {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 10px 16px;
+      }
+
+      dt {
+        color: #94a3b8;
+      }
+
+      dd {
+        margin: 0;
+        overflow-wrap: anywhere;
+      }
+
+      pre {
+        min-height: 260px;
+        max-height: 420px;
+        overflow: auto;
+        background: #020617;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 16px;
+        padding: 16px;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="card">
+        <h1>浏览器钱包 NFT Mint Monitor</h1>
+        <p>
+          这个页面使用 MetaMask / Rabby 等注入式浏览器钱包连接 Ethereum Mainnet，自动读取合约 ABI、识别 mint 函数、监听新区块，并在开启自动模式后每个新区块尝试发起一次 mint 交易。
+        </p>
+        <p class="warning">
+          浏览器钱包不能被网页静默控制或自动确认交易；每次交易仍必须由钱包弹窗让你手动确认签名。这是钱包的安全设计，脚本不会读取或保存私钥。
+        </p>
+
+        <div class="grid">
+          <label>
+            合约地址
+            <input id="contractAddress" value="0x460d7dfa7aefb52ddb7b87a767485325b31272d9" spellcheck="false" />
+          </label>
+          <label>
+            Payable mint 金额（ETH，可选）
+            <input id="mintValueEth" placeholder="免费 mint 留空或填 0" inputmode="decimal" />
+          </label>
+          <label>
+            Etherscan API Key（可选）
+            <input id="etherscanApiKey" placeholder="Sourcify 失败时用于读取 ABI" spellcheck="false" />
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="connectButton">连接浏览器钱包</button>
+          <button id="loadAbiButton" class="secondary" disabled>读取 ABI / 识别 mint</button>
+          <button id="mintNowButton" class="secondary" disabled>立即尝试 mint</button>
+          <button id="autoButton" class="danger" disabled>开启自动每区块尝试</button>
+        </div>
+
+        <dl>
+          <dt>钱包</dt>
+          <dd id="walletAddress">未连接</dd>
+          <dt>网络</dt>
+          <dd id="networkName">未连接</dd>
+          <dt>当前区块</dt>
+          <dd id="currentBlock">-</dd>
+          <dt>Gas price</dt>
+          <dd id="gasPrice">-</dd>
+          <dt>识别函数</dt>
+          <dd id="mintFunction">-</dd>
+          <dt>最近 tx</dt>
+          <dd id="lastTx">-</dd>
+        </dl>
+
+        <h2>日志</h2>
+        <pre id="log"></pre>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
